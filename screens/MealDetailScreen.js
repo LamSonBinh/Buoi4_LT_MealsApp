@@ -1,5 +1,5 @@
 import React, { useContext, useLayoutEffect } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native'; // Thêm Linking
 import { AntDesign } from '@expo/vector-icons'; 
 import { useTranslation } from 'react-i18next'; 
 import { FavoritesContext } from '../context/FavoritesContext';
@@ -51,6 +51,14 @@ const MealDetailScreen = ({ route, navigation }) => {
     return typeof value === 'string' ? value : 'N/A';
   };
 
+  const handlePressYouTube = () => {
+    if (selectedMeal.youtubeLink) {
+      Linking.openURL(selectedMeal.youtubeLink);  
+    } else {
+      alert('No YouTube link available');
+    }
+  };
+
   return (
     <ScrollView style={[styles.screen, { backgroundColor: isDarkMode ? '#333' : '#8bc498' }]}>
       <Image source={selectedMeal.image} style={styles.image} />
@@ -60,6 +68,11 @@ const MealDetailScreen = ({ route, navigation }) => {
       <Text style={[styles.description, { color: isDarkMode ? '#ddd' : '#000' }]}>
         {getTextValue(i18n.language === 'vi' ? selectedMeal.description.vi : selectedMeal.description.en)}
       </Text>
+
+      {/* Thêm nút để mở YouTube */}
+      <TouchableOpacity onPress={handlePressYouTube} style={styles.youtubeButton}>
+        <Text style={{ color: 'white' }}>{i18n.language === 'vi' ? 'Xem trên YouTube' : 'Watch on YouTube'}</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -85,6 +98,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginHorizontal: 20,
     textAlign: 'center',
+  },
+  youtubeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: 'red',
+    borderRadius: 5,
+    alignSelf: 'center',
   },
 });
 
