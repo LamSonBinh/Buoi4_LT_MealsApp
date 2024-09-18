@@ -7,7 +7,7 @@ export const FavoritesProvider = ({ children }) => {
 
   const addFavorite = (mealId) => {
     setFavorites((prevFavorites) => {
-      // Chỉ thêm nếu món ăn chưa có trong danh sách yêu thích
+      
       if (!prevFavorites.includes(mealId)) {
         return [...prevFavorites, mealId];
       }

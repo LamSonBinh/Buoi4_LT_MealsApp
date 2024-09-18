@@ -1,16 +1,19 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { useTheme } from '../context/ThemeContext'; 
 
 const MealItem = ({ title, image, onPress }) => {
+  const { isDarkMode } = useTheme(); 
+
   return (
-    <View style={styles.mealItem}>
+    <View style={[styles.mealItem, { backgroundColor: isDarkMode ? '#444' : '#fff' }]}>
       <TouchableOpacity onPress={onPress}>
         <View>
-          <View style={{ ...styles.mealRow, ...styles.mealHeader, ...styles.imageContainer }}>
+          <View style={[styles.mealRow, styles.mealHeader, styles.imageContainer]}>
             <Image source={image} style={styles.image} />
           </View>
-          <View style={{ ...styles.mealRow, ...styles.mealDetail }}>
-            <Text style={styles.title}>{title}</Text>
+          <View style={[styles.mealRow, styles.mealDetail, { backgroundColor: isDarkMode ? '#555' : '#f8f8f8' }]}>
+            <Text style={[styles.title, { color: isDarkMode ? '#fff' : '#333' }]}>{title}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -30,7 +33,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
-    elevation: 5, // Hiển thị bóng trên Android
+    elevation: 5, 
   },
   mealRow: {
     flexDirection: 'row',
@@ -43,11 +46,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 10,
-    backgroundColor: '#f8f8f8', // Màu nền nhạt cho phần tiêu đề
+    backgroundColor: '#f8f8f8',
   },
   imageContainer: {
-    justifyContent: 'center', // Căn giữa theo chiều dọc
-    alignItems: 'center', // Căn giữa theo chiều ngang
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
   image: {
     width: '50%',
@@ -56,10 +59,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
   },
   title: {
-    fontFamily: 'sans-serif-medium', // Đổi font chữ
+    fontFamily: 'sans-serif-medium', 
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333', // Màu chữ đậm
+    color: '#333', 
     textAlign: 'center',
   },
 });

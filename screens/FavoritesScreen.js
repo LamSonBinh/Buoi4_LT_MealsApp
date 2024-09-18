@@ -3,20 +3,31 @@ import { FlatList, View, Text, StyleSheet } from 'react-native';
 import MealItem from '../components/MealItem';
 import { FavoritesContext } from '../context/FavoritesContext';
 import { MEALS } from '../data/dummy-data';
+import { useTranslation } from 'react-i18next'; 
+import { useTheme } from '../context/ThemeContext'; 
 
-const FavoritesScreen = ({ navigation }) => { // Thêm navigation vào tham số
+const FavoritesScreen = ({ navigation }) => {
   const { favorites } = useContext(FavoritesContext);
-
-  // Lọc các món ăn yêu thích
+  const { i18n } = useTranslation(); 
+  const { isDarkMode } = useTheme(); 
   const favoriteMeals = MEALS.filter(meal => favorites.includes(meal.id));
 
+  const getTextValue = (meal, language) => {
+    return {
+      title: language === 'vi' ? meal.title.vi : meal.title.en,
+      description: language === 'vi' ? meal.description.vi : meal.description.en
+    };
+  };
+
   const renderMealItem = (itemData) => {
+    const { title, description } = getTextValue(itemData.item, i18n.language);
+
     return (
       <MealItem
-        title={itemData.item.title}
+        title={title}
         image={itemData.item.image}
         onPress={() => {
-          // Điều hướng đến chi tiết món ăn
+
           navigation.navigate('MealDetail', { mealId: itemData.item.id });
         }}
       />
@@ -24,11 +35,18 @@ const FavoritesScreen = ({ navigation }) => { // Thêm navigation vào tham số
   };
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { backgroundColor: isDarkMode ? '#1e1e1e' : '#fff' }]}>
       {favoriteMeals.length > 0 ? (
-        <FlatList style={styles.screen2} data={favoriteMeals} renderItem={renderMealItem} keyExtractor={item => item.id} />
+        <FlatList 
+          style={[styles.list, { backgroundColor: isDarkMode ? '#2e2e2e' : '#8bc498' }]}
+          data={favoriteMeals} 
+          renderItem={renderMealItem} 
+          keyExtractor={item => item.id} 
+        />
       ) : (
-        <Text>Hiện không có món nào.</Text>
+        <Text style={[styles.message, { color: isDarkMode ? '#ddd' : '#000' }]}>
+          {i18n.language === 'vi' ? "Hiện không có món nào." : "There are no items available at the moment."}
+        </Text>
       )}
     </View>
   );
@@ -40,16 +58,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  screen2: {
-    height: 250,
+  list: {
     width: '100%',
-    backgroundColor: '#f8f8f8',
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5, // Hiển thị bóng trên Android
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  message: {
+    fontSize: 16,
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
 });
 
